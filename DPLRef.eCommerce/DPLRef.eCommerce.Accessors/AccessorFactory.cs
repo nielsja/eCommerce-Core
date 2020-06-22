@@ -15,12 +15,10 @@ namespace DPLRef.eCommerce.Accessors
     {
         private UtilityFactory _utilityFactory;
 
-        public AccessorFactory(AmbientContext context, UtilityFactory utilityFactory) 
-            : base(context)
+        public AccessorFactory(AmbientContext context, UtilityFactory utilityFactory) : base(context)
         {
             // NOTE: this is here to ensure the factories from the Manager are propogated down to the other factories 
             _utilityFactory = utilityFactory ?? new UtilityFactory(Context);
-
             AddType<ICartAccessor>(typeof(CartAccessor));
             AddType<ICatalogAccessor>(typeof(CatalogAccessor));
             AddType<IEmailAccessor>(typeof(EmailAccessor));
@@ -31,7 +29,9 @@ namespace DPLRef.eCommerce.Accessors
             AddType<ISellerAccessor>(typeof(SellerAccessor));
             AddType<IRemittanceAccessor>(typeof(RemittanceAccessor));
             AddType<IShippingRulesAccessor>(typeof(ShippingRulesAccessor));
+            AddType<ITaxRateAccessor>(typeof(TaxRateAccessor));
         }
+
 
         public T CreateAccessor<T>() where T : class
         {

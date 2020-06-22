@@ -57,8 +57,8 @@ namespace DPLRef.eCommerce.Tests.EngineTests
             var result = taxCalculationEngine.CalculateCartTax(wsCart);
 
             Assert.AreEqual(15.00m, result.SubTotal);
-            Assert.AreEqual(1.12m, result.TaxAmount);
-            Assert.AreEqual(16.12m, result.Total);
+            Assert.AreEqual(1.15m, result.TaxAmount);
+            Assert.AreEqual(16.15m, result.Total);
         }
     }
 }

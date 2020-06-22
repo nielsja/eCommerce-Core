@@ -113,7 +113,7 @@ namespace DPLRef.eCommerce.Tests.ManagerTests
 
             Assert.IsTrue(result.Success, result.Message);
             Assert.AreEqual(1, result.Order.Id);
-            Assert.AreEqual(1.60m, result.Order.Total);
+            Assert.AreEqual(1.61m, result.Order.Total);
             Assert.IsTrue(mockData.OrderCreated, "Order not created");
             Assert.IsTrue(mockData.OrderSucceeded, "Order unsuccessful");
             Assert.IsTrue(mockData.CartDeleted, "Cart not deleted");
@@ -152,7 +152,7 @@ namespace DPLRef.eCommerce.Tests.ManagerTests
             Assert.IsNotNull(result.Order);
 
             Assert.AreEqual(1, result.Order.Id);
-            Assert.AreEqual(1.60m, result.Order.Total);
+            Assert.AreEqual(1.61m, result.Order.Total);
             Assert.IsTrue(mockData.OrderCreated, "Order not created");
             Assert.IsTrue(string.IsNullOrEmpty(result.Order.AuthorizationCode));
             // verify that the progress flags were not set

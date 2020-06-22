@@ -309,9 +309,8 @@ namespace DPLRef.eCommerce.Tests.AccessorTests
             }
 
             var saved = accessor.SaveOrder(2, order);
-
             Assert.IsNotNull(saved);
-            
+
             var after = accessor.SalesTotal();
             Assert.IsNotNull(after);
 

@@ -139,7 +139,7 @@ namespace DPLRef.eCommerce.Tests.ManagerTests
             Assert.AreEqual(1, response.Cart.CartItems[0].Quantity);
             Assert.AreEqual(1.50m, response.Cart.CartItems[0].UnitPrice);
             Assert.AreEqual(1.50m, response.Cart.CartItems[0].ExtendedPrice);
-            Assert.AreEqual(0.10m, response.Cart.TaxAmount);
+            Assert.AreEqual(0.11m, response.Cart.TaxAmount);
         }
 
         [TestMethod]

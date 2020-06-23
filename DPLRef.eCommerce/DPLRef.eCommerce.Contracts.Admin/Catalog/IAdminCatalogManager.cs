@@ -31,6 +31,8 @@ namespace DPLRef.eCommerce.Contracts.Admin.Catalog
         /// Updates a specific product for the authenticated seller
         /// </summary>
         AdminProductResponse SaveProduct(int catalogId, Product product);
+
+        void RebuildCatalog(int catalogId);
     }
 
 

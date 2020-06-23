@@ -30,6 +30,7 @@ namespace DPLRef.eCommerce.Accessors
             AddType<IRemittanceAccessor>(typeof(RemittanceAccessor));
             AddType<IShippingRulesAccessor>(typeof(ShippingRulesAccessor));
             AddType<ITaxRateAccessor>(typeof(TaxRateAccessor));
+            AddType<ISearchAccessor>(typeof(SearchAccessor));
         }
 
 

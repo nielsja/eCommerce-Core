@@ -9,10 +9,13 @@ using DPLRef.eCommerce.Accessors.DataTransferObjects;
 using DPLRef.eCommerce.Common.Contracts;
 using DPLRef.eCommerce.Engines;
 using DPLRef.eCommerce.Utilities;
+using DPLRef.eCommerce.Contracts.WebStore.Catalog;
+using DPLRef.eCommerce.Contracts.Admin.Catalog;
+using DTO = DPLRef.eCommerce.Accessors.DataTransferObjects;
 
 namespace DPLRef.eCommerce.Managers.Catalog
 {
-    class CatalogManager : ManagerBase, WebStore.IWebStoreCatalogManager, Admin.IAdminCatalogManager
+    class CatalogManager : ManagerBase, IWebStoreCatalogManager, IAdminCatalogManager
     {
 
         #region IAdminCatalogManager
@@ -66,7 +69,7 @@ namespace DPLRef.eCommerce.Managers.Catalog
                 if (UtilityFactory.CreateUtility<ISecurityUtility>().SellerAuthenticated())
                 {
                     // map to the accessor DTO
-                    WebStoreCatalog accCatalog = new WebStoreCatalog();
+                    DTO.WebStoreCatalog accCatalog = new DTO.WebStoreCatalog();
                     DTOMapper.Map(catalog, accCatalog);
 
                     accCatalog = AccessorFactory.CreateAccessor<ICatalogAccessor>().SaveCatalog(accCatalog);
@@ -113,7 +116,7 @@ namespace DPLRef.eCommerce.Managers.Catalog
                 if (UtilityFactory.CreateUtility<ISecurityUtility>().SellerAuthenticated())
                 {
                     // map to the accessor DTO
-                    Product accProduct = new Product();
+                    DTO.Product accProduct = new DTO.Product();
                     DTOMapper.Map(product, accProduct);
 
                     accProduct = AccessorFactory.CreateAccessor<ICatalogAccessor>().SaveProduct(catalogId, accProduct);
@@ -257,14 +260,14 @@ namespace DPLRef.eCommerce.Managers.Catalog
                 // Get the webstore catalog
                 WebStore.WebStoreCatalog result = new WebStore.WebStoreCatalog();
                 ICatalogAccessor catalogAccessor = AccessorFactory.CreateAccessor<ICatalogAccessor>();
-                WebStoreCatalog accCatalog = catalogAccessor.Find(catalogId);
+                DTO.WebStoreCatalog accCatalog = catalogAccessor.Find(catalogId);
 
                 // Get the webstore catalog products
                 if (accCatalog != null)
                 {
                     DTOMapper.Map(accCatalog, result);
 
-                    Product[] catalogProducts = catalogAccessor.FindAllProductsForCatalog(catalogId);
+                    DTO.Product[] catalogProducts = catalogAccessor.FindAllProductsForCatalog(catalogId);
                     List<WebStore.ProductSummary> productList = new List<WebStore.ProductSummary>();
 
                     foreach (var catalogProduct in catalogProducts)
@@ -303,7 +306,7 @@ namespace DPLRef.eCommerce.Managers.Catalog
             try
             {
                 WebStore.ProductDetail result = new WebStore.ProductDetail();
-                Product catProduct = AccessorFactory.CreateAccessor<ICatalogAccessor>().FindProduct(productId);
+                DTO.Product catProduct = AccessorFactory.CreateAccessor<ICatalogAccessor>().FindProduct(productId);
 
                 if (catProduct != null)
                 {
@@ -349,6 +352,50 @@ namespace DPLRef.eCommerce.Managers.Catalog
             return input;
         }
         #endregion
+
+        WebStore.WebStoreSearchResponse WebStore.IWebStoreCatalogManager.Search(int catalogId, string query)
+        {
+            try
+            {
+                var products = AccessorFactory.CreateAccessor<ISearchAccessor>().Search(catalogId, query);
+                var list = new List<WebStore.ProductSearchItem>();
+
+                foreach (var product in products)
+                {
+                    var searchProduct = new WebStore.ProductSearchItem()
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Price = product.Price
+                    };
+                    list.Add(searchProduct);
+                }
+
+                return new WebStore.WebStoreSearchResponse()
+                {
+                    Success = true,
+                    Products = list.ToArray(),
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+
+                return new WebStore.WebStoreSearchResponse() { Success = false };
+            }
+        }
+
+        void Admin.IAdminCatalogManager.RebuildCatalog(int catalogId)
+        {
+            try
+            {
+                AccessorFactory.CreateAccessor<ISearchAccessor>().RebuildIndex(catalogId);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+        }
 
     }
 }

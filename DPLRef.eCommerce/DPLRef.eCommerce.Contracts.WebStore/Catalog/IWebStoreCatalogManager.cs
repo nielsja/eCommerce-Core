@@ -19,5 +19,7 @@ namespace DPLRef.eCommerce.Contracts.WebStore.Catalog
         /// <param name="productId"></param>
         /// <returns></returns>
         WebStoreProductResponse ShowProduct(int catalogId, int productId);
+
+        WebStoreSearchResponse Search(int catalogId, string query);
     }
 }

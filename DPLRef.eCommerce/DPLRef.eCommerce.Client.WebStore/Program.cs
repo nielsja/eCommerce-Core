@@ -107,6 +107,12 @@ namespace DPLRef.eCommerce.Client.WebStore
                     case 16: // Submit Order
                         SubmitOrder(_sessionId);
                         break;
+                    case 17: // Rebuild Search
+                        RebuildSearch(1);
+                        break;
+                    case 18:
+                        Search(1);
+                        break;
                     case 99:
                         exitApp = true;
                         break;
@@ -147,6 +153,9 @@ namespace DPLRef.eCommerce.Client.WebStore
             Console.WriteLine(" 15: Set billing same as shipping");
             Console.WriteLine("Order =====================");
             Console.WriteLine(" 16: Submit Order");
+            Console.WriteLine("Search =====================");
+            Console.WriteLine(" 17: Rebuild Search");
+            Console.WriteLine(" 18: Search");
             Console.WriteLine("Exit =====================");
             Console.WriteLine(" 99: exit");
             string selection = Console.ReadLine();
@@ -235,6 +244,27 @@ namespace DPLRef.eCommerce.Client.WebStore
             var webStoreOrderManager = managerFactory.CreateManager<IWebStoreOrderManager>();
             var response = webStoreOrderManager.SubmitOrder(1, PaymentInstrument);
             ShowResponse(response, StringUtilities.DataContractToJson<WebStoreOrder>(response.Order));
+        }
+
+        private static void RebuildSearch(int catalogId)
+        {
+            var context = new AmbientContext() { SellerId = 1 };
+            var managerFactory = new ManagerFactory(context);
+            var webStoreCatalogManager = managerFactory.CreateManager<Contracts.Admin.Catalog.IAdminCatalogManager>();
+            webStoreCatalogManager.RebuildCatalog(catalogId);
+        }
+
+        private static void Search(int catalogId)
+        {
+            Console.WriteLine("Search Text:");
+            var query = Console.ReadLine();
+
+            var context = new AmbientContext() { SellerId = 1 };
+            var managerFactory = new ManagerFactory(context);
+            var webStoreCatalogManager = managerFactory.CreateManager<IWebStoreCatalogManager>();
+            var response = webStoreCatalogManager.Search(catalogId, query);
+
+            ShowResponse(response, StringUtilities.DataContractToJson<ProductSearchItem[]>(response.Products));
         }
     }
 }

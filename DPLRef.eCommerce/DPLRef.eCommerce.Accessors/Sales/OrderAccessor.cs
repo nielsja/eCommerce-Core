@@ -104,7 +104,7 @@ namespace DPLRef.eCommerce.Accessors.Sales
 
             using (var db = eCommerce.Accessors.EntityFramework.eCommerceDbContext.Create())
             {
-                result = (from o in db.Orders
+                result = (from o in db.Orders 
                           join s in db.Sellers on o.SellerId equals s.Id
                           where o.SellerId == Context.SellerId
                           group o by new { o.SellerId, s.Name } into g

@@ -501,5 +501,44 @@ namespace DPLref.eCommerce.Tests.IntegrationTests
         }
 
         #endregion
+
+        [TestMethod]
+        [TestCategory("Integration-WebStore")]
+        public void WebStore_Search()
+        {
+            // ## Arrange ##
+
+            // Create managers
+            var context = new AmbientContext() { SellerId = 1, SessionId = Guid.NewGuid(), AuthToken = "MyToken" };
+            var webStoreMgr = GetManager<IWebStoreCatalogManager>(context);
+            var adminMgr = GetManager<DPLRef.eCommerce.Contracts.Admin.Catalog.IAdminCatalogManager>(context);
+
+            // Create a catalog using admin manager
+            var saveCatalogResponse = adminMgr.SaveCatalog(new DPLRef.eCommerce.Contracts.Admin.Catalog.WebStoreCatalog()
+            {
+                Name = "integration_test",
+                Description = "integration_test"
+            });
+
+            // Save a product using admin manager
+            var saveProductResponse = adminMgr.SaveProduct(
+                saveCatalogResponse.Catalog.Id,
+                new DPLRef.eCommerce.Contracts.Admin.Catalog.Product()
+                {
+                    Name = "toyota",
+                    IsAvailable = true,
+                    Price = 10.0m,
+                });
+
+            // ## Act ##
+            // Rebuild catalog using admin manager
+            adminMgr.RebuildCatalog(saveCatalogResponse.Catalog.Id);
+            // Search using web store manager
+            var result = webStoreMgr.Search(saveCatalogResponse.Catalog.Id, "toyta");
+
+            // ## Assert ##
+            Assert.AreEqual(1, result.Products.Length);
+        }
+
     }
 }

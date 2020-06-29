@@ -4,13 +4,15 @@ using DPLRef.eCommerce.Accessors.DataTransferObjects;
 using Product = DPLRef.eCommerce.Accessors.DataTransferObjects.Product;
 using DPLRef.eCommerce.Accessors.EntityFramework;
 using AutoMapper.QueryableExtensions;
+using Remotion.Linq.Clauses;
+using System.Threading;
 
 namespace DPLRef.eCommerce.Accessors.Catalog
 {
 
     class CatalogAccessor : AccessorBase, ICatalogAccessor
     {
-
+        #region Main Code
         public WebStoreCatalog Find(int catalogId)
         {
             using (var db = eCommerce.Accessors.EntityFramework.eCommerceDbContext.Create())
@@ -167,5 +169,57 @@ namespace DPLRef.eCommerce.Accessors.Catalog
                 }
             }
         }
+        #endregion
+
+        #region Lab 21 - Linq assignment
+        public Product[] AllProductsInRange(decimal low, decimal high)
+        {
+            using (var db = eCommerce.Accessors.EntityFramework.eCommerceDbContext.Create())
+            {
+                var dbProducts = db.Products
+                    .Where(p => p.Price > low && p.Price < high);
+                return dbProducts.ProjectTo<Product>(DTOMapper.Configuration).ToArray();
+            }
+        }
+
+        public Product[] AllProductsFromSupplier(string supplierName)
+        {
+            using (var db = eCommerce.Accessors.EntityFramework.eCommerceDbContext.Create())
+            {
+                var dbProducts = db.Products
+                    .Where(p => p.SupplierName == supplierName);
+                return dbProducts.ProjectTo<Product>(DTOMapper.Configuration).ToArray();
+            }
+        }
+
+        public ProductsBySupplierItem[] ProductsBySupplier()
+        {
+            using (var db = eCommerce.Accessors.EntityFramework.eCommerceDbContext.Create())
+            {
+                var productsBySupplier =
+                    (from p in db.Products
+                     group p by new { p.SupplierName }
+                     into NewGroup
+                     select new ProductsBySupplierItem()
+                     {
+                         Count = NewGroup.Count(),
+                         Supplier = NewGroup.Key.ToString()
+                     }
+                    ).ToArray();
+
+                return productsBySupplier;
+            }
+        }
+
+        public void UpdatePrice(int id, decimal price)
+        {
+            using (var db = eCommerce.Accessors.EntityFramework.eCommerceDbContext.Create())
+            {
+                var dbProduct = db.Products.First(p => p.Id == id);
+                dbProduct.Price = price;
+                db.SaveChanges();
+            }
+        }
+        #endregion
     }
 }

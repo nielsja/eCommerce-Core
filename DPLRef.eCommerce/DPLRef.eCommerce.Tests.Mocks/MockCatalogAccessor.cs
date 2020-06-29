@@ -92,5 +92,31 @@ namespace DPLRef.eCommerce.Tests.Mocks
         {
             return input;
         }
+
+        #region Lab 21 code
+        public Product[] AllProductsInRange(decimal low, decimal high)
+        {
+            var mockProducts = MockData.Products
+                    .Where(p => p.Price > low && p.Price < high);
+            return mockProducts.ToArray();
+        }
+
+        public Product[] AllProductsFromSupplier(string supplierName)
+        {
+            var mockProducts = MockData.Products
+                .Where(p => p.SupplierName == supplierName);
+            return mockProducts.ToArray();
+        }
+
+        public ProductsBySupplierItem[] ProductsBySupplier()
+        {
+            
+        }
+
+        public void UpdatePrice(int id, decimal price)
+        {
+            
+        }
+        #endregion
     }
 }

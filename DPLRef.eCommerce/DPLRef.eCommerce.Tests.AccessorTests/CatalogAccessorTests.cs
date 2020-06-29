@@ -284,5 +284,62 @@ namespace DPLRef.eCommerce.Tests.AccessorTests
         }
 
         #endregion
+
+        #region Lab 21 Tests
+
+        [TestMethod]
+        [TestCategory("Lab 21 Tests")]
+        public void CatalogAccessor_AllProductsInRange()
+        {
+            var accessor = CreateCatalogAccessor();
+
+            var products = accessor.AllProductsInRange(10, 1000);
+
+            Assert.IsTrue(products.Length > 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Lab 21 Tests")]
+        public void CatalogAccessor_AllProductsFromSupplier()
+        {
+            var accessor = CreateCatalogAccessor();
+
+            var products = accessor.AllProductsFromSupplier("Russ");
+
+            Assert.IsTrue(products.Length > 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Lab 21 Tests")]
+        public void CatalogAccessor_ProductsBySupplier()
+        {
+            var accessor = CreateCatalogAccessor();
+
+            var products = accessor.ProductsBySupplier();
+
+            Assert.IsTrue(products.Length > 0);
+            Assert.IsTrue(products[0].Supplier != null);
+        }
+
+        [TestMethod]
+        [TestCategory("Lab 21 Tests")]
+        public void CatalogAccessor_UpdatePrice()
+        {
+            var accessor = CreateCatalogAccessor();
+
+            var id = 7;
+
+            var originalPrice = accessor.FindProduct(id).Price;
+
+            var newPrice = originalPrice + 10;
+
+            accessor.UpdatePrice(id, newPrice);
+
+            var updatedPrice = accessor.FindProduct(id).Price;
+
+            Assert.AreNotEqual(originalPrice, updatedPrice);
+        }
+
+        #endregion
     }
 }
